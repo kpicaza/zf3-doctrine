@@ -6,7 +6,81 @@
 
 Ejemplo de un modulo REST en **Zend Framework 3** usando **Doctrine**.
 
-## Modulo Api
+## Module Api
+
+Mini-modulo con un controlador REST (user) aplicando los metodos GET, POST, PUT y DELETE.
+
+### config/module.config.php
+
+En este archivo de configuración se da de alta la ruta a al controlador que en este caso es "**/api/user**".
+También configura la conexión que tengra doctrine.
+
+## Doctrine command-line
+
+Para usar los comando de Doctrine, dentro del directorio "**/module/Api/src/Doctrine**" crear un enlace al bin de doctine.
+
+````bash
+cd module/Api/src/Doctrine 
+ln -s ../../../../vendor/bin/doctrine
+````
+
+y para usarlos basta con "**./doctrine**"
+
+## module/Api/src/Models
+
+Dentro de este directorio se crean los archivos **PHP** que usara doctrine como entidades.
+
+````php
+
+<?php
+
+namespace Api\Models;
+
+/**
+ * @Entity @Table(name="Users")
+ **/
+class User
+{
+
+    /**
+     * @Id @Column(type="integer")
+     * @GeneratedValue
+     **/
+    protected $id;
+
+    /**
+     * @Column(type="string")
+     **/
+    protected $name;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function toArray()
+    {
+        return array(
+            'id' => $this->getId(),
+            'name' => $this->getName()
+        );
+    }
+
+}
+
+````
+
+
 
 
 
