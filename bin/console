@@ -1,0 +1,29 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Application;
+use Zend\Mvc\Application as MVC;
+
+set_time_limit(0);
+$env = (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production');
+defined('APPLICATION_ENV') || define('APPLICATION_ENV', $env);
+
+$loader = require __DIR__ . '/../vendor/autoload.php';
+
+$input = new ArgvInput();
+
+// Retrieve configuration
+$appConfig = require __DIR__ . '/../config/application.config.php';
+if ('development' === $env && file_exists(__DIR__ . '/../config/development.config.php')) {
+    $appConfig = \Zend\Stdlib\ArrayUtils::merge($appConfig, require __DIR__ . '/../config/development.config.php');
+}
+
+$zend = MVC::init($appConfig);
+$serviceManager = $zend->getServiceManager();
+
+$console = new Application('Zend Framework 3 Console tool', '0.0.1');
+
+require_once __DIR__ . '/../config/autoload/commands.php';
+
+$console->run($input);

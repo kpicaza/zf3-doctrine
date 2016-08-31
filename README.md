@@ -12,27 +12,32 @@ Mini-modulo con un controlador REST (user) aplicando los metodos GET, POST, PUT 
 
 ### config/module.config.php
 
-En este archivo de configuración se da de alta la ruta a al controlador que en este caso es "**/api/user**".
+En este archivo de configuración se da de alta la ruta a al controlador que en este caso es "**/api/products**".
 También configura la conexión que tengra doctrine.
 
-## Doctrine command-line
+## Zend Framework command-line
 
-Para usar los comando de Doctrine, dentro del directorio "**/module/Api/src/Doctrine**" crear un enlace al bin de doctine.
+Para ver los comandos disponibles desde la raíz del proyecto
 
-````bash
-cd module/Api/src/Doctrine 
-ln -s ../../../../vendor/bin/doctrine
+````
+php bin/console list
 ````
 
-y para usarlos basta con "**./doctrine**"
+Obtener ayuda de un comando concreto
+````
+php bin/console orm:schema-tool:create help
+````
 
-## module/Api/src/Models
+## Ejemplo de uso
+
+
 
 Dentro de este directorio se crean los archivos **PHP** que usara doctrine como entidades.
 
 ````php
 
 <?php
+// module/Api/src/Models
 
 namespace Api\Models;
 
@@ -80,8 +85,17 @@ class User
 
 ````
 
+Ahora creamos la base de datos(Este paso varía según el sistema de bbdd elegido).
 
+````
+mysql -uroot -p -e "CREATE DATABASE some_db_name;"
+````
 
+Creamos creamos el esquema de bbdd
+
+````
+php bin/console orm:schema-tool:create
+````
 
 
 ## Web server setup

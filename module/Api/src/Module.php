@@ -7,37 +7,48 @@
 
 namespace Api;
 
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\EntityManager;
-
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 
-class Module
-    implements ConfigProviderInterface
+/**
+ * Class Module
+ * @package Api
+ */
+class Module implements ConfigProviderInterface
 {
 
     const VERSION = '3.0.1';
 
+    /**
+     * @return mixed
+     */
     public function getConfig()
     {
-        return include __DIR__ . '/../config/module.config.php';
+        return require __DIR__ . '/../config/module.config.php';
     }
 
+    /**
+     * @return array
+     */
     public function getServiceConfig()
     {
+        $config = $this->getConfig();
 
         return [
             'factories' => [
-                \Doctrine\ORM\EntityManager::class => function($container) {
-                    $config = include __DIR__ . '/../config/module.config.php';
-                    $doctrine = $config['doctrine'];
-
+                \DRKP\ZF3Doctrine\MetadataConfigurationFactory::class => function (
+                    \Zend\ServiceManager\ServiceManager $container
+                ) use ($config) {
+                    return new \DRKP\ZF3Doctrine\MetadataConfigurationFactory(
+                        $config['orm']['orm.em.options']['mappings'],
+                        $config['orm']['orm.em.options']['mappings'][0]['type']
+                    );
+                },
+                \Doctrine\ORM\EntityManager::class => function (
+                    \Zend\ServiceManager\ServiceManager $container
+                ) use ($config) {
                     return \Doctrine\ORM\EntityManager::create(
-                        $doctrine,
-                        Setup::createAnnotationMetadataConfiguration(
-                            array(__DIR__ . '/Models'),
-                            false
-                        )
+                        $config['dbal']['db.options'],
+                        $container->get(\DRKP\ZF3Doctrine\MetadataConfigurationFactory::class)->make()
                     );
 
                 }
@@ -45,13 +56,21 @@ class Module
         ];
     }
 
+    /**
+     * @return array
+     */
     public function getControllerConfig()
     {
+        $config = $this->getConfig();
+
         return [
             'factories' => [
-                Controller\UserController::class => function($container) {
-                    return new Controller\UserController(
-                        $container->get(\Doctrine\ORM\EntityManager::class)
+                \Api\Controller\ProductsController::class => function (
+                    \Zend\ServiceManager\ServiceManager $container
+                ) use ($config) {
+                    return new \Api\Controller\ProductsController(
+                        $container->get(\Doctrine\ORM\EntityManager::class),
+                        $config
                     );
                 },
             ],

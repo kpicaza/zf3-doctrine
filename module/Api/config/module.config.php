@@ -8,16 +8,17 @@
 namespace Api;
 
 use Zend\Router\Http\Segment;
+use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
     'router' => [
         'routes' => [
-            'user' => [
-                'type'    => Segment::class,
+            'products' => [
+                'type'    => 'segment',
                 'options' => [
-                    'route' => '/api/user[/:id]',
+                    'route' => '/api/products[/:id]',
                     'defaults' => [
-                        'controller' => Controller\UserController::class
+                        'controller' => Controller\ProductsController::class,
                     ],
                 ],
             ],
@@ -28,13 +29,21 @@ return [
             'api' => __DIR__ . '/../view',
         ],
     ],
-    'doctrine' => [
-        'driver' => 'pdo_mysql',
-        'host' => '127.0.0.1',
-        'port' => '3306',
-        'dbname' => '{db}',
-        'user' => '{user}',
-        'password' => '{pass}',
-        'charset' => 'utf8'
+    'dbal' => [
+        'db.options' => [
+            'driver' => 'pdo_sqlite',
+            'path' =>  __DIR__ . '/../../../data/db.sqlite'
+        ],
+    ],
+    'orm' => [
+        "orm.em.options" => [
+            "mappings" => [
+                [
+                    "type" => "annotation",
+                    "namespace" => "Api",
+                    "path" => realpath(__DIR__ . "/../src/Models"),
+                ],
+            ],
+        ],
     ]
 ];

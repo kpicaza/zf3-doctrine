@@ -1,6 +1,9 @@
 {
   "name" : "ddniel16/zf3-doctrine",
   "description" : "Skeleton Application for Zend Framework zend-mvc applications with Doctrine 2",
+  "type" : "project",
+  "license" : "BSD-3-Clause",
+  "keywords" : [ "framework", "mvc", "zf", "doctrine" ],
   "require" : {
     "php" : "^5.6 || ^7.0",
     "zendframework/zend-component-installer" : "^1.0 || ^0.3 || ^1.0.0-dev@dev",
@@ -8,24 +11,23 @@
     "zfcampus/zf-development-mode" : "^3.0",
     "zendframework/zend-http" : "^2.5",
     "zendframework/zend-json" : "3.0.0",
-    "doctrine/orm" : "^2.5"
+    "doctrine/orm" : "^2.5",
+    "drkp/doctrine-metadata-configuration-factory": "@dev"
   },
-  "license" : "BSD-3-Clause",
-  "keywords" : [ "framework", "mvc", "zf", "doctrine" ],
-  "autoload-dev" : {
-    "psr-4" : {
-      "ApplicationTest\\" : "module/Application/test/"
-    }
-  },
-  "extra" : [ ],
-  "minimum-stability" : "dev",
   "autoload" : {
     "psr-4" : {
       "Application\\" : "module/Application/src/",
       "Api\\" : "module/Api/src/"
     }
   },
-  "type" : "project",
+  "autoload-dev" : {
+    "psr-4" : {
+      "ApplicationTest\\" : "module/Application/test/"
+    }
+  },
+  "config": {
+    "bin-dir": "./bin"
+  },
   "scripts" : {
     "cs-check" : "phpcs",
     "cs-fix" : "phpcbf",
@@ -36,6 +38,8 @@
     "serve" : "php -S 0.0.0.0:8080 -t public/ public/index.php",
     "test" : "phpunit"
   },
+  "extra" : [ ],
   "homepage" : "http://framework.zend.com/",
+  "minimum-stability" : "dev",
   "prefer-stable" : true
 }

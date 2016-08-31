@@ -7,36 +7,33 @@
 
 namespace Api\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Zend\Http\Request;
 use Zend\Http\Response;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\Json\Json;
-use Api\Module;
 
-class UserController
-    extends AbstractRestfulController
+class ProductsController extends AbstractRestfulController
 {
-
-    protected $_table;
     protected $_config;
     protected $_doctrine;
 
-    public function __construct(\Doctrine\ORM\EntityManager $doctrine)
+    public function __construct(EntityManagerInterface $doctrine, array $config)
     {
-
-        $this->_config = Module::getConfig();
+        $this->_config = $config;
         $this->_doctrine = $doctrine;
     }
 
     public function getList()
     {
 
-        $products = $this->_doctrine->getRepository('Api\Models\Product');
+        $repository = $this->_doctrine->getRepository('Api\Models\Product');
 
         $result = array();
-        $users = $products->findAll();
+        $products = $repository->findAll();
 
-        foreach ($users as $user) {
-            $result[] = $user->toArray();
+        foreach ($products as $product) {
+            $result[] = $product->toArray();
         }
 
         $response = $this->getResponse();
@@ -52,8 +49,8 @@ class UserController
     public function get($id)
     {
 
-        $products = $this->_doctrine->getRepository('Api\Models\Product');
-        $product = $products->find($id);
+        $repository = $this->_doctrine->getRepository('Api\Models\Product');
+        $product = $repository->find($id);
         $result = $product->toArray();
 
         $response = $this->getResponse();
@@ -92,8 +89,8 @@ class UserController
     public function update($id, $data)
     {
 
-        $products = $this->_doctrine->getRepository('Api\Models\Product');
-        $product = $products->find($id);
+        $repository = $this->_doctrine->getRepository('Api\Models\Product');
+        $product = $repository->find($id);
 
         $product->setName($data['name']);
 
@@ -118,8 +115,8 @@ class UserController
     public function delete($id)
     {
 
-        $products = $this->_doctrine->getRepository('Api\Models\Product');
-        $product = $products->find($id);
+        $repository = $this->_doctrine->getRepository('Api\Models\Product');
+        $product = $repository->find($id);
 
         $this->_doctrine->remove($product);
         $this->_doctrine->flush();
